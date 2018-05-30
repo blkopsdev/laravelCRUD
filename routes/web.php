@@ -18,4 +18,8 @@ Route::resource('products', 'ProductController');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/dashboard', 'HomeController@index')->name('index');
+Route::group(['middleware' => 'auth', 'prefix' => 'dashboard'], function() {
+    Route::resource('authors', 'Authorscontroller');
+    Route::resource('books', 'Bookscontroller');
+});
