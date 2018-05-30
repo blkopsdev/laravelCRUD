@@ -26,31 +26,42 @@
                     @if (session('message'))
                         <div class="alert alert-info">{{ session('message') }}</div>
                     @endif    
+                        @can('create', Author::class)
                         <a href="{{ route('authors.create') }}" class="btn btn-default">Add New Author</a><br /><br />
+                        @endcan
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
+                                    @can('delete', Author::class)
                                     <th><input type="checkbox" class="checkbox_all" id=""></th>
+                                    @endcan
                                     <th>First name</th>
                                     <th>Last name</th>
+                                    @can('edit', Author::class)
                                     <th>Actions</th>
+                                    @endcan
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($authors as $author)
                                 <tr>
-                                <td><input type="checkbox" class="checkbox_delete" 
-       name="entries_to_delete[]" value="{{ $author->id }}" /></td>
+                                    @can('delete', Author::class)
+                                    <td><input type="checkbox" class="checkbox_delete" name="entries_to_delete[]" value="{{ $author->id }}" /></td>
+                                    @endcan
                                     <td>{{ $author->first_name }}</td>
                                     <td>{{ $author->last_name }}</td>
+                                    @can('edit', Author::class)
                                     <td>
                                         <a href="{{ route('authors.edit', $author->id) }}" class="btn btn-default">Edit</a>
+                                        @can('delete', Author::class)
                                         <form action="{{ route('authors.destroy', $author->id) }}" method="POST" style="display: inline" onsubmit="return confirm('Are you sure?');">
                                             <input type="hidden" name="_method" value="DELETE">
                                             {{ csrf_field() }}
                                             <button class="btn btn-danger">Delete</button>
                                         </form>
+                                        @endcan
                                     </td>
+                                    @endcan
                                 </tr>
                                 @empty
                                     <tr>
@@ -59,12 +70,14 @@
                                 @endforelse
                             </tbody>
                         </table>
+                        @can('delete', Author::class)
                         <form action="{{ route('authors.mass_destroy') }}" method="post" onsubmit="return confirm('Are you sure?');">
                             {{ csrf_field() }}
                             <input type="hidden" name="_method" value="DELETE">
                             <input type="hidden" name="ids" id="ids" value="" />
                             <input type="submit" value="Delete selected" class="btn btn-danger">
                         </form>
+                        @endcan
                         {{ $authors->links() }}
                     </div>
                 </div>
