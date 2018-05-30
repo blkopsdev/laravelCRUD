@@ -18,8 +18,14 @@ Route::resource('products', 'ProductController');
 
 Auth::routes();
 
-Route::get('/dashboard', 'HomeController@index')->name('index');
+Route::get('/home', 'HomeController@index')->name('index');
+Route::group(['middleware' => 'auth'], function() {
+    Route::get('/dashboard', function() {
+        return view('backend.index');
+    });
+});
 Route::group(['middleware' => 'auth', 'prefix' => 'dashboard'], function() {
-    Route::resource('authors', 'Authorscontroller');
+    Route::delete('authors/mass_destroy', 'AuthorsController@massDestroy')->name('authors.mass_destroy');
+    Route::resource('authors', 'AuthorsController');
     Route::resource('books', 'Bookscontroller');
 });

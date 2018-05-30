@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreAuthorRequest;
 use App\Author;
 
-class Authorscontroller extends Controller
+class AuthorsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -26,6 +26,7 @@ class Authorscontroller extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Author::class);
         return view('backend.authors.AuthorCreate');
     }
 
@@ -37,6 +38,7 @@ class Authorscontroller extends Controller
      */
     public function store(StoreAuthorRequest $request)
     {
+        $this->authorize('create', Author::class);
         Author::create($request->all());
         return redirect()->route('authors.index')->with(['message' => 'Author added successfully.']);
     }
@@ -60,6 +62,7 @@ class Authorscontroller extends Controller
      */
     public function edit($id)
     {
+        $this->authorize('update', Author::class);
         $author = Author::findOrFail($id);
         return view('backend.authors.AuthorEdit', compact('author'));
     }
@@ -71,8 +74,9 @@ class Authorscontroller extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreAuthorRequest $request, $id)
     {
+        $this->authorize('update', Author::class);
         $author = Author::findOrFail($id);
         $author->update($request->all());
         $author->save();
@@ -88,8 +92,27 @@ class Authorscontroller extends Controller
      */
     public function destroy($id)
     {
+        $this->authorize('delete', Author::class);
         $author = Author::findOrFail($id);
         $author->delete();
         return redirect()->route('authors.index')->with(['message' => 'Author Deleted Successfuly']);
+    }
+
+    /**
+     * Remove the selected resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function massDestroy(Request $request)
+    {
+        $this->authorize('delete', Author::class);
+        $authors = explode(',', $request->input('ids'));
+        foreach ($authors as $author_id) {
+            $author = Author::findOrFail($author_id);
+            $author->delete();
+        }
+
+        return redirect()->route('authors.index')->with(['message' => 'Authors deleted successfully']);
     }
 }

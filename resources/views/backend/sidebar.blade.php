@@ -53,7 +53,7 @@
             </span>
         </a>
         <ul class="treeview-menu">
-            <li class="active"><a href="/admin/authors">Authors</a></li>
+            <li class="active"><a href="{{ route('authors.index') }}">Authors</a></li>
             <li><a href="/admin/books">Books</a></li>
         </ul>
     </li>

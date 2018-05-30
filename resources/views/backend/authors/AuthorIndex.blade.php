@@ -30,6 +30,7 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
+                                    <th><input type="checkbox" class="checkbox_all" id=""></th>
                                     <th>First name</th>
                                     <th>Last name</th>
                                     <th>Actions</th>
@@ -38,6 +39,8 @@
                             <tbody>
                                 @forelse($authors as $author)
                                 <tr>
+                                <td><input type="checkbox" class="checkbox_delete" 
+       name="entries_to_delete[]" value="{{ $author->id }}" /></td>
                                     <td>{{ $author->first_name }}</td>
                                     <td>{{ $author->last_name }}</td>
                                     <td>
@@ -56,6 +59,12 @@
                                 @endforelse
                             </tbody>
                         </table>
+                        <form action="{{ route('authors.mass_destroy') }}" method="post" onsubmit="return confirm('Are you sure?');">
+                            {{ csrf_field() }}
+                            <input type="hidden" name="_method" value="DELETE">
+                            <input type="hidden" name="ids" id="ids" value="" />
+                            <input type="submit" value="Delete selected" class="btn btn-danger">
+                        </form>
                         {{ $authors->links() }}
                     </div>
                 </div>
@@ -65,4 +74,33 @@
     </section>
     <!-- /.content -->
   </div>
+@endsection
+
+@section('scripts')
+    <script>
+        $(".checkbox_all").click(function(){
+            $('input.checkbox_delete').prop('checked', this.checked);
+        });
+    </script>
+    <script>
+        function getIDs()
+        {
+            var ids = [];
+            $('.checkbox_delete').each(function () {
+                if($(this).is(":checked")) {
+                    ids.push($(this).val());
+                }
+            });
+            $('#ids').val(ids.join());
+        }
+
+        $(".checkbox_all").click(function(){
+            $('input.checkbox_delete').prop('checked', this.checked);
+            getIDs();
+        });
+
+        $('.checkbox_delete').change(function() {
+            getIDs();
+        });
+    </script>  
 @endsection
