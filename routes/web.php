@@ -28,4 +28,8 @@ Route::group(['middleware' => 'auth', 'prefix' => 'dashboard'], function() {
     Route::delete('authors/mass_destroy', 'AuthorsController@massDestroy')->name('authors.mass_destroy');
     Route::resource('authors', 'AuthorsController');
     Route::resource('books', 'Bookscontroller');
+    Route::resource('users', 'UserController');
+	Route::resource('roles', 'RoleController');
+	Route::resource('posts', 'PostController');
+	Route::resource('permissions','PermissionController');
 });
